@@ -46,6 +46,18 @@ class Busquedas {
         }
 
     }
+async CiudadLugar(lat,long){
+     try{
+         axios.create({
+           baseURL:'',
+           params:'',
+         })
+       }
+     catch(error){
+       console.log(error);
+       }
+
+  }
 
 }
 
