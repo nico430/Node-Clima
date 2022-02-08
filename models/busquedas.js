@@ -19,6 +19,14 @@ class Busquedas {
         }
     }
 
+    get paramsWeather(){
+      return{
+        'appid': process.env.OPENWEATHER_KEY,
+        'units': 'metric',
+        'lang': 'es'
+      }
+    }
+
     async ciudad(lugar = '') {
 
         //realizar peticion http
@@ -46,16 +54,54 @@ class Busquedas {
         }
 
     }
-async CiudadLugar(lat,long){
+async ClimaLugar(lat,lon){
      try{
-         axios.create({
-           baseURL:'',
-           params:'',
-         })
+
+          //instance axios.create()
+          const weatherInstance = axios.create(
+            {
+              baseURL: 'https://api.openweathermap.org/data/2.5/weather',
+              params:
+              {
+                lat,
+                lon,
+                ...this.paramsWeather
+              }
+            }
+          )
+
+          //resp.data
+
+          const response = await weatherInstance.get()
+          const {weather, main} = response.data
+
+          return(
+            {
+              "desc":weather[0].description,
+              "min": main.temp_min,
+              "max": main.temp_max,
+              "temp":main.temp
+            }
+          )
+
        }
      catch(error){
        console.log(error);
        }
+
+  }
+
+
+  agregarHistorial( lugar = "" ){
+    
+    // prevenir que hayan historiales duplicados
+    
+    // añadir al historial
+    this.Historial.unshift(lugar);  // en lugar de hacer un push y que se agrege al final el unshift agrega el nuevo elemento al principio del array
+
+    // grabar el historial en un archivo o DB
+
+
 
   }
 
