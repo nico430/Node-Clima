@@ -15,9 +15,14 @@ class Busquedas {
     }
 
     get historialCapitalizado(){
+      return this.Historial.map(
+        (lugar) => {
+          let palabras = lugar.split(' ');
+          palabras = palabras.map( p => p[0].toUpperCase() + p.substring(1) );
 
-      // ha de retornar la primer letra de cada palabra en mayúsculas
-      return this.Historial
+          return palabras.join(' ')
+        }
+      )
     }
 
     get paramsMapbox() {
@@ -109,7 +114,7 @@ async ClimaLugar(lat,lon){
     if( this.Historial.includes(lugar.toLocaleLowerCase())){
       return;
     }
-    
+    this.Historial = this.Historial.splice(0,5);
     // añadir al historial
     this.Historial.unshift(lugar);  // en lugar de hacer un push y que se agrege al final el unshift agrega el nuevo elemento al principio del array
 
@@ -128,20 +133,10 @@ async ClimaLugar(lat,lon){
   }
 
   leerDB(){
-    if(fs.existsSync(this.dbPath)){
-      
-      const data = JSON.parse(fs.readFileSync(this.dbPath))
+    if(fs.existsSync(this.dbPath)) return;
+
+      const data = JSON.parse(fs.readFileSync(this.dbPath, {encoding:'utf-8'}))
       this.Historial = data.historial
-      
-    }
-  }
-
-  capitalizarPalabra(text = ""){
-    let words =text.split(" ");
-    words.map( word => {
-      return (word.chartAt(0).toUpperCase() + word.slice(1) + " ");
-    })
-
   }
 
 }
