@@ -1,14 +1,23 @@
+const fs = require('fs')
 const axios = require('axios');
 
 
 class Busquedas {
 
-    Historial = ['bs', 'gr', 'g', 'p', 'ca', 'ar'];
+    Historial = [];
+    dbPath = './db/database.json';
 
     constructor() {
 
         //leer DB si existe
+        this.leerDB()
 
+    }
+
+    get historialCapitalizado(){
+
+      // ha de retornar la primer letra de cada palabra en mayúsculas
+      return this.Historial
     }
 
     get paramsMapbox() {
@@ -26,6 +35,8 @@ class Busquedas {
         'lang': 'es'
       }
     }
+
+    
 
     async ciudad(lugar = '') {
 
@@ -95,13 +106,41 @@ async ClimaLugar(lat,lon){
   agregarHistorial( lugar = "" ){
     
     // prevenir que hayan historiales duplicados
+    if( this.Historial.includes(lugar.toLocaleLowerCase())){
+      return;
+    }
     
     // añadir al historial
     this.Historial.unshift(lugar);  // en lugar de hacer un push y que se agrege al final el unshift agrega el nuevo elemento al principio del array
 
     // grabar el historial en un archivo o DB
+    this.guardarDB()
 
+  }
 
+  guardarDB(){
+
+    const payload = {
+      historial:this.Historial
+    }
+
+    fs.writeFileSync( this.dbPath, JSON.stringify( payload ) )
+  }
+
+  leerDB(){
+    if(fs.existsSync(this.dbPath)){
+      
+      const data = JSON.parse(fs.readFileSync(this.dbPath))
+      this.Historial = data.historial
+      
+    }
+  }
+
+  capitalizarPalabra(text = ""){
+    let words =text.split(" ");
+    words.map( word => {
+      return (word.chartAt(0).toUpperCase() + word.slice(1) + " ");
+    })
 
   }
 
