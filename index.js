@@ -44,7 +44,14 @@ const main = async() => {
 
                 break;
             
-            
+            case 2:
+              busquedas.Historial.forEach(
+                (lugar,i)=>{
+                  const idx = `${ i++ }. `.green;
+                  console.log( idx, lugar);
+                }
+              )
+            break;
         }
 
         await pausa()
